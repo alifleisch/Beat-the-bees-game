@@ -1,53 +1,37 @@
-var gameChar_x;
-var gameChar_y;
-var floorPos_y;
+let gameChar_x, gameChar_y, floorPos_y;
+let isLeft, isRight, isFalling, isPlummeting;
 
-var isLeft;
-var isRight;
-var isFalling;
-var isPlummeting;
-
-var mountains_x;
-var mountains_y;
-var trees_x;
-var treePos_y;
-var clouds;
-var canyons = [];
-var raindrops = [];
-var collectables = [];
-var cameraPosX;
-
-var game_score;
-var flagpole;
-var lives;
-
-var jumpSound;
-var scoreSound;
-var levelSound;
-var losingSound;
-var gameOverSound;
-var soundPlayed = false;
-
-var platforms;
-var enemies;
+let mountains, trees_x, treePos_y, clouds;
+let canyons = [];
+let raindrops = [];
+let collectables;
+let platforms;
+let enemies, enemy_y;
+let flagpole;
+let lives;
+let cameraPosX;
+let jumpSound, scoreSound, levelSound, losingSound, gameOverSound;
+let soundPlayed = false;
 
 function setup() {
-    createCanvas(1024, 576);
+    createCanvas(1200, 576);
     floorPos_y = height * 3 / 4;
     lives = 3;
-
     startGame();
 }
 
 function startGame() {
     gameChar_x = width / 2;
     gameChar_y = floorPos_y;
-
+    collectables = createCollectables();
+    clouds = createClouds();
+    mountains = createMountains();
+    platforms = createPlatforms();
+    enemies = createEnemies();
     isLeft = false;
     isRight = false;
     isFalling = false;
     isPlummeting = false;
-
     cameraPosX = 0;
 
     canyons = [
@@ -100,225 +84,48 @@ function startGame() {
         }
     ];
 
-    collectables = [
-        {
-            x_pos: 660,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
+    function createCollectables() {
+        return [
+            { x_pos: 660, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 1160, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 1270, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 1270, y_pos: 345, size: 20, isFound: false },
+            { x_pos: 1420, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 1580, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 1980, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 2150, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 2280, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 2500, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 2680, y_pos: 415, size: 20, isFound: false },
+            { x_pos: 2830, y_pos: 415, size: 20, isFound: false }
+        ];
+    }
 
-        {
-            x_pos: 1160,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
+    function createClouds() {
+        return [
+            { x_pos: 150, y_pos: 90, radius: 60, rect_width: 90, rect_height: 40, moveRight: true, distance: 0 },
+            { x_pos: 600, y_pos: 150, radius: 72, rect_width: 108, rect_height: 48, moveRight: true, distance: 0 },
+            { x_pos: 800, y_pos: 100, radius: 60, rect_width: 90, rect_height: 40, moveRight: true, distance: 0 },
+            { x_pos: 1200, y_pos: 150, radius: 72, rect_width: 108, rect_height: 48, moveRight: true, distance: 0 },
+            { x_pos: 1500, y_pos: 90, radius: 60, rect_width: 90, rect_height: 40, moveRight: true, distance: 0 },
+            { x_pos: 1800, y_pos: 150, radius: 72, rect_width: 108, rect_height: 48, moveRight: true, distance: 0 },
+            { x_pos: 2200, y_pos: 90, radius: 60, rect_width: 90, rect_height: 40, moveRight: true, distance: 0 },
+            { x_pos: 2600, y_pos: 150, radius: 72, rect_width: 108, rect_height: 48, moveRight: true, distance: 0 },
+            { x_pos: 2900, y_pos: 90, radius: 60, rect_width: 90, rect_height: 40, moveRight: true, distance: 0 },
+            { x_pos: 3200, y_pos: 150, radius: 72, rect_width: 108, rect_height: 48, moveRight: true, distance: 0 }
+        ];
+    }
 
-        {
-            x_pos: 1270,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 1270,
-            y_pos: 345,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 1420,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 1580,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 1980,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 2150,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 2280,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 2500,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 2680,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        },
-
-        {
-            x_pos: 2830,
-            y_pos: 415,
-            size: 20,
-            isFound: false
-        }
-    ];
-
-    clouds = [
-        {
-            x_pos: 150,
-            y_pos: 90,
-            radius: 60,
-            rect_width: 90,
-            rect_height: 40,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 600,
-            y_pos: 150,
-            radius: 60 * 1.2,
-            rect_width: 90 * 1.2,
-            rect_height: 40 * 1.2,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 800,
-            y_pos: 100,
-            radius: 60,
-            rect_width: 90,
-            rect_height: 40,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 1200,
-            y_pos: 150,
-            radius: 60 * 1.2,
-            rect_width: 90 * 1.2,
-            rect_height: 40 * 1.2,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 1500,
-            y_pos: 90,
-            radius: 60,
-            rect_width: 90,
-            rect_height: 40,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 1800,
-            y_pos: 150,
-            radius: 60 * 1.2,
-            rect_width: 90 * 1.2,
-            rect_height: 40 * 1.2,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 2200,
-            y_pos: 90,
-            radius: 60,
-            rect_width: 90,
-            rect_height: 40,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 2600,
-            y_pos: 150,
-            radius: 60 * 1.2,
-            rect_width: 90 * 1.2,
-            rect_height: 40 * 1.2,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 2900,
-            y_pos: 90,
-            radius: 60,
-            rect_width: 90,
-            rect_height: 40,
-            moveRight: true,
-            distance: 0
-        },
-
-        {
-            x_pos: 3200,
-            y_pos: 150,
-            radius: 60 * 1.2,
-            rect_width: 90 * 1.2,
-            rect_height: 40 * 1.2,
-            moveRight: true,
-            distance: 0
-        }
-    ];
-
-    mountains = [
-        {
-            x_pos: -100,
-            y_pos: floorPos_y
-        },
-
-        {
-            x_pos: 300,
-            y_pos: floorPos_y
-        },
-
-        {
-            x_pos: 950,
-            y_pos: floorPos_y
-        },
-
-        {
-            x_pos: 1750,
-            y_pos: floorPos_y
-        },
-
-        {
-            x_pos: 2850,
-            y_pos: floorPos_y
-        },
-
-        {
-            x_pos: 3300,
-            y_pos: floorPos_y
-        }
-    ];
+    function createMountains() {
+        return [
+            { x_pos: -100, y_pos: floorPos_y },
+            { x_pos: 300, y_pos: floorPos_y },
+            { x_pos: 950, y_pos: floorPos_y },
+            { x_pos: 1750, y_pos: floorPos_y },
+            { x_pos: 2850, y_pos: floorPos_y },
+            { x_pos: 3300, y_pos: floorPos_y }
+        ];
+    }
 
     trees_x = [-150, 100, 300, 600, 900, 1100, 1500, 1850, 2200, 2400, 2600, 3200];
     treePos_y = floorPos_y;
@@ -327,28 +134,33 @@ function startGame() {
         raindrops.push(createRaindrop());
     }
     if (lives == 3) {
-        game_score = 0;
+        resetScore();
     }
     flagpole = { isReached: false, x_pos: 3100 };
 
-    platforms = [];
+    function createPlatforms() {
+        return [
+            createPlatform(100, floorPos_y - 100, 80),
+            createPlatform(500, floorPos_y - 100, 180),
+            createPlatform(1000, floorPos_y - 100, 150),
+            createPlatform(1500, floorPos_y - 100, 150),
+            createPlatform(2000, floorPos_y - 100, 150),
+            createPlatform(2500, floorPos_y - 100, 150)
+        ];
+    }
 
-    platforms.push(createPlatforms(100, floorPos_y - 100, 80));
-    platforms.push(createPlatforms(500, floorPos_y - 100, 180));
-    platforms.push(createPlatforms(1000, floorPos_y - 100, 150));
-    platforms.push(createPlatforms(1500, floorPos_y - 100, 150));
-    platforms.push(createPlatforms(2000, floorPos_y - 100, 150));
-    platforms.push(createPlatforms(2500, floorPos_y - 100, 150));
-
-    enemies = [];
-    enemies.push(new Enemy(350, floorPos_y - 10, 80, 30));
-    enemies.push(new Enemy(850, floorPos_y - 10, 80, 30));
-    enemies.push(new Enemy(1550, floorPos_y - 10, 80, 30));
-    enemies.push(new Enemy(2100, floorPos_y - 10, 80, 30));
-    enemies.push(new Enemy(2600, floorPos_y - 10, 80, 30));
-    enemies.push(new Enemy(3100, floorPos_y - 10, 80, 30));
+    function createEnemies() {
+        enemy_y = floorPos_y - 10;
+        return [
+            new Enemy(350, enemy_y, 80, 30),
+            new Enemy(850, enemy_y, 80, 30),
+            new Enemy(1550, enemy_y, 80, 30),
+            new Enemy(2100, enemy_y, 80, 30),
+            new Enemy(2600, enemy_y, 80, 30),
+            new Enemy(3100, enemy_y, 80, 30)
+        ];
+    }
 }
-
 
 function createRaindrop() {
     return {
@@ -373,7 +185,7 @@ function draw() {
     drawMountains();
     drawTrees();
 
-    for (var i = 0; i < platforms.length; i++) {
+    for (let i = 0; i < platforms.length; i++) {
         platforms[i].draw();
     }
 
@@ -394,10 +206,10 @@ function draw() {
     }
     renderFlagpole();
 
-    for (var i = 0; i < enemies.length; i++) {
+    for (let i = 0; i < enemies.length; i++) {
         enemies[i].draw();
 
-        var isContact = enemies[i].checkContact(gameChar_x, gameChar_y);
+        let isContact = enemies[i].checkContact(gameChar_x, gameChar_y);
         if (isContact) {
             if (lives > 0) {
                 lives -= 1;
@@ -600,7 +412,7 @@ function draw() {
     fill(255);
     noStroke();
     textSize(12);
-    text("Score: " + game_score, 20, 20);
+    text("Score: " + getScore(), 20, 20);
     // life tokens, how many lives have remained
     for (i = 0; i < lives; i++) {
         fill(256, 170, 0);
@@ -741,11 +553,10 @@ function drawCollectable(t_collectable) {
     }
 }
 
-
 function checkCollectable(t_collectable) {
     if (dist(gameChar_x, gameChar_y, t_collectable.x_pos, t_collectable.y_pos) < 20) {
         t_collectable.isFound = true;
-        game_score++;
+        increaseScore(1);
         scoreSound.play();
     }
 }
@@ -753,14 +564,14 @@ function checkCollectable(t_collectable) {
 function checkCanyon(t_canyon) {
     //falling down
     if (gameChar_y < floorPos_y) {
-        var isContact = false;
-        for (var i = 0; i < platforms.length; i++) {
+        let isContact = false;
+        for (let i = 0; i < platforms.length; i++) {
             if (platforms[i].checkContact(gameChar_x, gameChar_y) == true) {
                 isContact = true;
                 break;
             }
         }
-        if (isContact == false) {
+        if (!isContact) {
             gameChar_y += 0.5;
             isFalling = false;
         }
@@ -769,8 +580,8 @@ function checkCanyon(t_canyon) {
         gameChar_y += 0.25;
         //raining when the game is over
         for (j = 0; j < raindrops.length; j++) {
-            var drop = raindrops[j];
-            var gravity = map(drop.z, 0, 1000, 0, 0.2);
+            let drop = raindrops[j];
+            let gravity = map(drop.z, 0, 1000, 0, 0.2);
             drop.ySpeed = drop.ySpeed + gravity;
             stroke(138, 153, 236);
             strokeWeight(map(drop.z, 0, 20, 1, 3));
@@ -782,6 +593,49 @@ function checkCanyon(t_canyon) {
         }
     }
 }
+
+
+// // Canyon.js
+// class Canyon {
+//     width = 200;
+//     x_pos = undefined;
+
+//     constructor(options) {
+//         if (options) {
+//             this.x_pos = options.x_pos;
+//         }
+//     }
+
+//     draw(envSettings) {
+//         fill(155, 42, 42);
+//         noStroke();
+//         beginShape();
+//         vertex(this.x_pos, envSettings.floorPos_y);
+//         vertex(this.x_pos - 15, envSettings.floorPos_y + 20);
+//         vertex(this.x_pos - 15, envSettings.floorPos_y + 144);
+//     }
+// }
+
+// // Scene.js
+// class Scene {
+//     envSettings = { floorPos_y: 0 };
+
+//     constructor() {
+//         let x_pos = 100;
+//         this.canyons = Array(5).fill(1).map((el, idx) => new Canyon({ x_pos: x_pos * idx }));
+//     }
+
+//     draw() {
+//         for (const c of this.canyons) {
+//             c.draw(this.envSettings);
+//         }
+//     }
+// }
+
+// // main.js
+// function main() {
+//     new Scene().draw();
+// }
 
 function drawCanyon(t_canyon) {
     //earth
@@ -836,7 +690,7 @@ function renderFlagpole() {
 }
 
 function checkFlagpole() {
-    var distFlag = abs(gameChar_x - flagpole.x_pos);
+    let distFlag = abs(gameChar_x - flagpole.x_pos);
     if (distFlag < 15) {
         flagpole.isReached = true;
     }
@@ -880,8 +734,8 @@ function preload() {
     gameOverSound.setVolume(0.1);
 }
 
-function createPlatforms(x, y, length) {
-    var p = {
+function createPlatform(x, y, length) {
+    let p = {
         x: x,
         y: y,
         originalX: x,
@@ -899,16 +753,16 @@ function createPlatforms(x, y, length) {
 
             stroke(160, 82, 45);
             strokeWeight(2);
-            var stripeSpacing = 14;
-            var stripeLength = 12;
-            var offsetY = 4;
-            var angleOffset = 3;
-            var startOffset = 5;
+            let stripeSpacing = 14;
+            let stripeLength = 12;
+            let offsetY = 4;
+            let angleOffset = 3;
+            let startOffset = 5;
 
-            for (var i = 0; i * stripeSpacing < this.length - stripeLength - startOffset; i++) {
-                var lineStartX = this.x + i * stripeSpacing + startOffset;
-                var lineEndX = lineStartX + stripeLength;
-                var lineY = this.y + offsetY + (i % 2) * 12;
+            for (let i = 0; i * stripeSpacing < this.length - stripeLength - startOffset; i++) {
+                let lineStartX = this.x + i * stripeSpacing + startOffset;
+                let lineEndX = lineStartX + stripeLength;
+                let lineY = this.y + offsetY + (i % 2) * 12;
 
                 line(lineStartX, lineY, lineEndX, lineY - angleOffset);
             }
@@ -916,7 +770,7 @@ function createPlatforms(x, y, length) {
         },
         checkContact: function (gc_x, gc_y) {
             if (gc_x > this.x && gc_x < this.x + this.length) {
-                var d = this.y - gc_y;
+                let d = this.y - gc_y;
                 if (d >= 0 && d < 5) {
                     return true;
                 }
@@ -979,7 +833,7 @@ function Enemy(x, y, rangeX, rangeY) {
         line(this.currentX + 5, this.currentY - 10, this.currentX + 15, this.currentY - 20);
     }
     this.checkContact = function (gc_x, gc_y) {
-        var d = dist(gc_x, gc_y, this.currentX, this.currentY)
+        let d = dist(gc_x, gc_y, this.currentX, this.currentY)
 
         if (d < 20) {
             return true;
@@ -987,4 +841,3 @@ function Enemy(x, y, rangeX, rangeY) {
         return false;
     }
 }
-
