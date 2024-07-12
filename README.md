@@ -1,5 +1,5 @@
-# Beat-the-bees-game
-A fun and engaging platformer game built using p5.js library. The game features a character navigating through a world filled with various obstacles, enemies and collectables
+# Beat-the-bees-game (draft, raw version, p5 library test)
+A platformer game built using p5.js library. The game features a character navigating through a world filled with various obstacles, enemies and collectables
 
 Features
 
