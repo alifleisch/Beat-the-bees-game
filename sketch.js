@@ -6,8 +6,6 @@ let platforms;
 let flagpole;
 let lives;
 let cameraPosX;
-let jumpSound, scoreSound, levelSound, losingSound, gameOverSound;
-let soundPlayed = false;
 
 function setup() {
     createCanvas(1200, 576);
@@ -220,8 +218,6 @@ function keyReleased() {
     }
 }
 
-
-
 function checkCanyon(t_canyon) {
     //falling down
     if (gameChar_y < floorPos_y) {
@@ -378,21 +374,6 @@ function checkPlayerDie() {
             startGame();
         }
     }
-}
-
-function preload() {
-    soundFormats('mp3', 'wav');
-    //sounds
-    jumpSound = loadSound('assets/jump.wav');
-    jumpSound.setVolume(0.1);
-    scoreSound = loadSound('assets/score.wav');
-    scoreSound.setVolume(0.1);
-    levelSound = loadSound('assets/completion-of-a-level.wav');
-    levelSound.setVolume(0.1);
-    losingSound = loadSound('assets/player-losing.wav');
-    losingSound.setVolume(0.1);
-    gameOverSound = loadSound('assets/game-over.wav');
-    gameOverSound.setVolume(0.1);
 }
 
 function createPlatform(x, y, length) {
