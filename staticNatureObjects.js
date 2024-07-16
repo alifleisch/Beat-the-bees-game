@@ -7,11 +7,9 @@ function setupNatureObjects() {
     mountains = createMountains();
     clouds = createClouds();
     treePos_y = floorPos_y;
-
 }
 
 function drawNatureObjects() {
-    drawBackground();
     drawClouds();
     drawMountains();
     drawTrees();

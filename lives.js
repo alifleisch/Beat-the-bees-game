@@ -34,13 +34,13 @@ function checkLives() {
 }
 
 function checkPlayerDie() {
-    if (char.y > floorPos_y && !isPlummeting && lives >= 1) {
+    if (char.y > floorPos_y && !char.isPlummeting && lives >= 1) {
         decreaseLives();
-        isPlummeting = true;
+        char.isPlummeting = true;
         if (!soundPlayed) {
             losingSound.play();
             soundPlayed = true;
-        } else if (char.y > floorPos_y && !isPlummeting && lives < 1) {
+        } else if (char.y > floorPos_y && !char.isPlummeting && lives < 1) {
             if (!soundPlayed) {
                 gameOverSound.play();
                 soundPlayed = true;
@@ -49,7 +49,7 @@ function checkPlayerDie() {
             }
         }
     }
-    if (isPlummeting && char.y > floorPos_y + 200) {
+    if (char.isPlummeting && char.y > floorPos_y + 200) {
         if (lives > 0) {
             startGame();
         }

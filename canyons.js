@@ -29,14 +29,14 @@ function checkCanyon(t_canyon) {
     if (char.y < floorPos_y) {
         let isContact = false;
         for (let i = 0; i < platforms.length; i++) {
-            if (platforms[i].checkContact(char.x, char.y) == true) {
+            if (platforms[i].checkContact(char.x, char.y)) {
                 isContact = true;
                 break;
             }
         }
         if (!isContact) {
             char.y += 0.5;
-            isFalling = false;
+            char.isFalling = false;
         }
     }
     let charIsDying = char.x > t_canyon.x_pos && char.x < t_canyon.x_pos + t_canyon.width && char.y >= floorPos_y || char.y > floorPos_y;

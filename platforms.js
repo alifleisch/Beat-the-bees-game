@@ -22,11 +22,10 @@ function createPlatforms() {
 }
 
 function createPlatform(x, y, length) {
-    let p = {
+    const p = {
         x: x,
         y: y,
         originalX: x,
-        length: length,
         range: 40,
         moveDirection: 0.7,
         length: length,
@@ -65,5 +64,6 @@ function createPlatform(x, y, length) {
             return false;
         }
     };
+
     return p;
 }

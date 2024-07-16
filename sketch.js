@@ -1,3 +1,15 @@
+/// <reference path="./soundEffects.js"/>
+/// <reference path="./gameScore.js"/>
+/// <reference path="./staticNatureObjects.js"/>
+/// <reference path="./collectables.js"/>
+/// <reference path="./enemies.js"/>
+/// <reference path="./platforms.js"/>
+/// <reference path="./canyons.js"/>
+/// <reference path="./flagpoles.js"/>
+/// <reference path="./raindrops.js"/>
+/// <reference path="./character.js"/>
+/// <reference path="./lives.js"/>
+
 let cameraPosX;
 let char;
 
@@ -23,6 +35,7 @@ function startGame() {
 
 function draw() {
     cameraPosX = char.x - width / 2;
+    drawBackground();
     push();
     translate(-cameraPosX, 0);
     drawNatureObjects();
@@ -31,24 +44,19 @@ function draw() {
     drawEnemies();
     drawCanyons();
     drawPlatforms();
-    char.updatePosition();
     char.drawChar();
-    checkPlayerDie();
-    alertGameOver();
-    textScore();
-    drawLifeTokens();
-    pop();
-}
 
-// start a new game
-if (lives < 1 && key === ' ') {
-    setupLives();
-    startGame();
+    checkPlayerDie();
+    pop();
+
+    alertGameOver();
+    drawLifeTokens();
+    textScore();
 }
 
 function keyPressed() {
     if (char.y > floorPos_y) {
-        isPlummeting = true;
+        char.isPlummeting = true;
     }
     if (key == 'a' || keyCode == 37) {
         char.moveLeft();
@@ -56,9 +64,14 @@ function keyPressed() {
         char.moveRight();
     }
     if (key == ' ' || key == 'w') {
-        if (!isFalling) {
+        if (!char.isFalling) {
             char.jump();
         }
+    }
+
+    if (key === ' ' && lives < 1) {
+        setupLives();
+        startGame();
     }
 }
 
