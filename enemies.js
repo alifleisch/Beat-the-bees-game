@@ -8,7 +8,7 @@ function drawEnemies() {
     for (let i = 0; i < enemies.length; i++) {
         enemies[i].draw();
 
-        let isContact = enemies[i].checkContact(gameChar_x, gameChar_y);
+        let isContact = enemies[i].checkContact(char.x, char.y);
         if (isContact) {
             if (lives > 0) {
                 lives -= 1;

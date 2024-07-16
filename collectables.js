@@ -43,7 +43,7 @@ function drawCollectables() {
 }
 
 function checkCollectable(t_collectable) {
-    if (dist(gameChar_x, gameChar_y, t_collectable.x_pos, t_collectable.y_pos) < 20) {
+    if (dist(char.x, char.y, t_collectable.x_pos, t_collectable.y_pos) < 20) {
         t_collectable.isFound = true;
         increaseScore(1);
         scoreSound.play();

@@ -6,78 +6,38 @@ let platforms;
 let flagpole;
 let lives;
 let cameraPosX;
+let char;
 
 function setup() {
-    createCanvas(1200, 576);
+    createCanvas(1024, 576);
     floorPos_y = height * 3 / 4;
     lives = 3;
+    char = new Char({ canvasWidth: width, floorPos_y });
     startGame();
     setupNatureObjects();
 }
 
 function startGame() {
-    gameCharPosition();
+    char.reset();
     drawNatureObjects();
     setupCollectables();
     setupEnemies();
     platforms = createPlatforms();
-    isLeft = false;
-    isRight = false;
-    isFalling = false;
-    isPlummeting = false;
     cameraPosX = 0;
 
     canyons = [
-        {
-            x_pos: 180,
-            width: 80,
-            waterFlow: 0
-        },
-
-        {
-            x_pos: 680,
-            width: 80,
-            waterFlow: 0
-        },
-
-        {
-            x_pos: 1180,
-            width: 60,
-            waterFlow: 0
-        },
-
-        {
-            x_pos: 1300,
-            width: 100,
-            waterFlow: 0
-        },
-
-        {
-            x_pos: 1600,
-            width: 80,
-            waterFlow: 0
-        },
-
-        {
-            x_pos: 2000,
-            width: 60,
-            waterFlow: 0
-        },
-
-        {
-            x_pos: 2300,
-            width: 80,
-            waterFlow: 0
-        },
-
-        {
-            x_pos: 2700,
-            width: 100,
-            waterFlow: 0
-        }
+        { x_pos: 180, width: 80, waterFlow: 0 },
+        { x_pos: 680, width: 80, waterFlow: 0 },
+        { x_pos: 1180, width: 60, waterFlow: 0 },
+        { x_pos: 1300, width: 100, waterFlow: 0 },
+        { x_pos: 1600, width: 80, waterFlow: 0 },
+        { x_pos: 2000, width: 60, waterFlow: 0 },
+        { x_pos: 2300, width: 80, waterFlow: 0 },
+        { x_pos: 2700, width: 100, waterFlow: 0 }
     ];
 
-    for (i = 0; i < 100; i++) {
+    raindrops = [];
+    for (let i = 0; i < 100; i++) {
         raindrops.push(createRaindrop());
     }
     if (lives == 3) {
@@ -108,7 +68,7 @@ function createRaindrop() {
 }
 
 function draw() {
-    cameraPosX = gameChar_x - width / 2;
+    cameraPosX = char.x - width / 2;
 
     background(100, 155, 255);
     noStroke();
@@ -116,10 +76,12 @@ function draw() {
     rect(0, floorPos_y, width, height - floorPos_y);
     push();
     translate(-cameraPosX, 0);
+
     drawNatureObjects();
     drawCollectables();
     drawEnemies();
-    drawGameCharacter();
+    char.updatePosition();
+    char.drawChar();
 
     for (let i = 0; i < platforms.length; i++) {
         platforms[i].draw();
@@ -130,7 +92,7 @@ function draw() {
         drawCanyon(canyons[i]);
     }
 
-    if (flagpole.isReached == false) {
+    if (!flagpole.isReached) {
         checkFlagpole();
     }
     renderFlagpole();
@@ -165,76 +127,53 @@ function draw() {
         noStroke();
         ellipse(width / 2 - 50 + i * 50, 20, 25, 25)
     }
+}
 
-    //INTERACTION
-
-    // going to the left and right
-    if (isLeft == true) {
-        gameChar_x -= 4;
-    } else if (isRight == true) {
-        gameChar_x += 4;
-    }
+// start a new game
+if (lives < 1 && key === ' ') {
+    lives = 3;
+    startGame();
 }
 
 function keyPressed() {
-    console.log("keyPressed: " + key);
-    console.log("keyPressed: " + keyCode);
-
-    if (gameChar_y > floorPos_y) {
+    if (char.y > floorPos_y) {
         isPlummeting = true;
     }
-    if (!isPlummeting) {
-        if (key == 'a' || keyCode == 37) {
-            isLeft = true;
-        } else if (key == 'd' || keyCode == 39) {
-            isRight = true;
-        }
-
-        //jump
-        if (key == ' ' || key == 'w') {
-            if (!isFalling) {
-                gameChar_y -= 150;
-                jumpSound.play();
-            }
-        }
+    if (key == 'a' || keyCode == 37) {
+        char.moveLeft();
+    } else if (key == 'd' || keyCode == 39) {
+        char.moveRight();
     }
-
-    // start a new game
-    if (lives < 1 && key === ' ') {
-        lives = 3;
-        startGame();
+    if (key == ' ' || key == 'w') {
+        if (!isFalling) {
+            char.jump();
+        }
     }
 }
 
 function keyReleased() {
-    console.log("keyReleased: " + key);
-    console.log("keyReleased: " + keyCode);
-
-    // if statements to control the animation of the character when keys are released
-    if (keyCode == 37) {
-        isLeft = false;
-    } else if (keyCode == 39) {
-        isRight = false;
+    if (keyCode == 37 || keyCode == 39) {
+        char.stopMoving();
     }
 }
 
 function checkCanyon(t_canyon) {
     //falling down
-    if (gameChar_y < floorPos_y) {
+    if (char.y < floorPos_y) {
         let isContact = false;
         for (let i = 0; i < platforms.length; i++) {
-            if (platforms[i].checkContact(gameChar_x, gameChar_y) == true) {
+            if (platforms[i].checkContact(char.x, char.y) == true) {
                 isContact = true;
                 break;
             }
         }
         if (!isContact) {
-            gameChar_y += 0.5;
+            char.y += 0.5;
             isFalling = false;
         }
     }
-    if (gameChar_x > t_canyon.x_pos && gameChar_x < t_canyon.x_pos + t_canyon.width && gameChar_y >= floorPos_y || gameChar_y > floorPos_y) {
-        gameChar_y += 0.25;
+    if (char.x > t_canyon.x_pos && char.x < t_canyon.x_pos + t_canyon.width && char.y >= floorPos_y || char.y > floorPos_y) {
+        char.y += 0.25;
         //raining when the game is over
         for (j = 0; j < raindrops.length; j++) {
             let drop = raindrops[j];
@@ -250,7 +189,6 @@ function checkCanyon(t_canyon) {
         }
     }
 }
-
 
 // // Canyon.js
 // class Canyon {
@@ -347,20 +285,20 @@ function renderFlagpole() {
 }
 
 function checkFlagpole() {
-    let distFlag = abs(gameChar_x - flagpole.x_pos);
+    let distFlag = abs(char.x - flagpole.x_pos);
     if (distFlag < 15) {
         flagpole.isReached = true;
     }
 }
 
 function checkPlayerDie() {
-    if (gameChar_y > floorPos_y && !isPlummeting && lives >= 1) {
+    if (char.y > floorPos_y && !isPlummeting && lives >= 1) {
         lives -= 1;
         isPlummeting = true;
         if (!soundPlayed) {
             losingSound.play();
             soundPlayed = true;
-        } else if (gameChar_y > floorPos_y && !isPlummeting && lives < 1) {
+        } else if (char.y > floorPos_y && !isPlummeting && lives < 1) {
             if (!soundPlayed) {
                 gameOverSound.play();
                 soundPlayed = true;
@@ -369,7 +307,7 @@ function checkPlayerDie() {
             }
         }
     }
-    if (isPlummeting && gameChar_y > floorPos_y + 200) {
+    if (isPlummeting && char.y > floorPos_y + 200) {
         if (lives > 0) {
             startGame();
         }
