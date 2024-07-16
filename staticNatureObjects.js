@@ -1,7 +1,9 @@
+let floorPos_y;
 let mountains = [], trees_x, treePos_y, clouds = [];
 trees_x = [-150, 100, 300, 600, 900, 1100, 1500, 1850, 2200, 2400, 2600, 3200];
 
 function setupNatureObjects() {
+    floorPos_y = height * 3 / 4;
     mountains = createMountains();
     clouds = createClouds();
     treePos_y = floorPos_y;

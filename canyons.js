@@ -39,21 +39,10 @@ function checkCanyon(t_canyon) {
             isFalling = false;
         }
     }
-    if (char.x > t_canyon.x_pos && char.x < t_canyon.x_pos + t_canyon.width && char.y >= floorPos_y || char.y > floorPos_y) {
+    let charIsDying = char.x > t_canyon.x_pos && char.x < t_canyon.x_pos + t_canyon.width && char.y >= floorPos_y || char.y > floorPos_y;
+    if (charIsDying) {
         char.y += 0.25;
-        //raining when the game is over
-        for (j = 0; j < raindrops.length; j++) {
-            let drop = raindrops[j];
-            let gravity = map(drop.z, 0, 1000, 0, 0.2);
-            drop.ySpeed = drop.ySpeed + gravity;
-            stroke(138, 153, 236);
-            strokeWeight(map(drop.z, 0, 20, 1, 3));
-            line(drop.x, drop.y, drop.x, drop.y + drop.len); drop.y += drop.ySpeed;
-
-            if (drop.y > height) {
-                raindrops[j] = createRaindrop();
-            }
-        }
+        startRaining();
     }
 }
 

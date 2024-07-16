@@ -1,17 +1,13 @@
-let floorPos_y;
-let isLeft, isRight, isFalling, isPlummeting;
-let raindrops = [];
 let lives;
 let cameraPosX;
 let char;
 
 function setup() {
     createCanvas(1024, 576);
-    floorPos_y = height * 3 / 4;
+    setupNatureObjects();
     lives = 3;
     char = new Char({ canvasWidth: width, floorPos_y });
     startGame();
-    setupNatureObjects();
     setupCanyons();
 }
 
@@ -23,24 +19,11 @@ function startGame() {
     setupPlatforms();
     cameraPosX = 0;
 
-    raindrops = [];
-    for (let i = 0; i < 100; i++) {
-        raindrops.push(createRaindrop());
-    }
+    pushRaindrops();
     if (lives == 3) {
         resetScore();
     }
     flagpoleStartState();
-}
-
-function createRaindrop() {
-    return {
-        x: random(width * 1.5),
-        y: random(-500, -50),
-        z: random(0, 20),
-        len: random(10, 20),
-        ySpeed: random(2, 6)
-    };
 }
 
 function draw() {

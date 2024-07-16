@@ -1,3 +1,6 @@
+
+let isLeft, isRight, isFalling, isPlummeting;
+
 class Char {
     constructor(settings) {
         this.init_x = settings.canvasWidth / 2;
