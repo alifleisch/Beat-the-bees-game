@@ -27,6 +27,12 @@ function decreaseLives() {
     lives -= 1;
 }
 
+function checkLives() {
+    if (lives == 3) {
+        resetScore();
+    }
+}
+
 function checkPlayerDie() {
     if (char.y > floorPos_y && !isPlummeting && lives >= 1) {
         decreaseLives();

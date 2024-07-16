@@ -11,3 +11,10 @@ function resetScore() {
 function getScore() {
     return game_score;
 }
+
+function textScore() {
+    fill(255);
+    noStroke();
+    textSize(12);
+    text("Score: " + getScore(), 20, 20);
+}

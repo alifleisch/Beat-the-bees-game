@@ -7,7 +7,6 @@ function setup() {
     setupLives();
     char = new Char({ canvasWidth: width, floorPos_y });
     startGame();
-    setupCanyons();
 }
 
 function startGame() {
@@ -15,13 +14,10 @@ function startGame() {
     drawNatureObjects();
     setupCollectables();
     setupEnemies();
+    setupCanyons();
     setupPlatforms();
-    cameraPosX = 0;
-
     pushRaindrops();
-    if (lives == 3) {
-        resetScore();
-    }
+    checkLives();
     flagpoleStartState();
 }
 
@@ -39,10 +35,7 @@ function draw() {
     char.drawChar();
     checkPlayerDie();
     alertGameOver();
-    fill(255);
-    noStroke();
-    textSize(12);
-    text("Score: " + getScore(), 20, 20);
+    textScore();
     drawLifeTokens();
     pop();
 }
