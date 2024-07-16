@@ -4,6 +4,12 @@ function setupPlatforms() {
     platforms = createPlatforms();
 }
 
+function drawPlatforms() {
+    for (let i = 0; i < platforms.length; i++) {
+        platforms[i].draw();
+    }
+}
+
 function createPlatforms() {
     return [
         createPlatform(100, floorPos_y - 100, 80),

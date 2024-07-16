@@ -1,7 +1,6 @@
 let floorPos_y;
 let isLeft, isRight, isFalling, isPlummeting;
 let raindrops = [];
-let flagpole;
 let lives;
 let cameraPosX;
 let char;
@@ -31,7 +30,7 @@ function startGame() {
     if (lives == 3) {
         resetScore();
     }
-    flagpole = { isReached: false, x_pos: 3100 };
+    flagpoleStartState();
 }
 
 function createRaindrop() {
@@ -46,7 +45,6 @@ function createRaindrop() {
 
 function draw() {
     cameraPosX = char.x - width / 2;
-
     background(100, 155, 255);
     noStroke();
     fill(0, 155, 0);
@@ -55,20 +53,14 @@ function draw() {
     translate(-cameraPosX, 0);
 
     drawNatureObjects();
+    drawFlagPole();
     drawCollectables();
     drawEnemies();
     drawCanyons();
+    drawPlatforms();
     char.updatePosition();
     char.drawChar();
 
-    for (let i = 0; i < platforms.length; i++) {
-        platforms[i].draw();
-    }
-
-    if (!flagpole.isReached) {
-        checkFlagpole();
-    }
-    renderFlagpole();
     checkPlayerDie();
     pop();
 
@@ -81,14 +73,6 @@ function draw() {
         return;
     }
 
-    if (flagpole.isReached == true) {
-        fill(0, 255, 0);
-        noStroke();
-        textAlign(CENTER, CENTER);
-        textSize(50);
-        text("Level complete", width / 2, height / 2);
-        return;
-    }
 
     fill(255);
     noStroke();
@@ -127,33 +111,6 @@ function keyPressed() {
 function keyReleased() {
     if (keyCode == 37 || keyCode == 39) {
         char.stopMoving();
-    }
-}
-
-function renderFlagpole() {
-    push();
-    strokeWeight(5);
-    stroke(100)
-    line(flagpole.x_pos, floorPos_y, flagpole.x_pos, floorPos_y - 200);
-    fill(255, 0, 255);
-    noStroke();
-    if (flagpole.isReached) {
-        rect(flagpole.x_pos, floorPos_y - 200, 50, 50);
-        if (!soundPlayed) {
-            levelSound.play();
-            soundPlayed = true;
-        }
-    } else {
-        rect(flagpole.x_pos, floorPos_y - 50, 50, 50);
-        soundPlayed = false;
-    }
-    pop();
-}
-
-function checkFlagpole() {
-    let distFlag = abs(char.x - flagpole.x_pos);
-    if (distFlag < 15) {
-        flagpole.isReached = true;
     }
 }
 
