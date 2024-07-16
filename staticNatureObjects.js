@@ -11,6 +11,7 @@ function setupNatureObjects() {
 }
 
 function drawNatureObjects() {
+    drawBackground();
     drawClouds();
     drawMountains();
     drawTrees();
@@ -40,6 +41,13 @@ function createClouds() {
         { x_pos: 2900, y_pos: 90, radius: 60, rect_width: 90, rect_height: 40, moveRight: true, distance: 0 },
         { x_pos: 3200, y_pos: 150, radius: 72, rect_width: 108, rect_height: 48, moveRight: true, distance: 0 }
     ];
+}
+
+function drawBackground() {
+    background(100, 155, 255);
+    noStroke();
+    fill(0, 155, 0);
+    rect(0, floorPos_y, width, height - floorPos_y);
 }
 
 function drawMountains() {
